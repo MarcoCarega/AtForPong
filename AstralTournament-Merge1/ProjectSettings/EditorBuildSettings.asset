@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/MenuScene.unity
+    guid: 2c335fba5c487ce42bf575cead46f665
+  - enabled: 0
+    path: Assets/Scenes/VehicleSample.unity
+    guid: a46e51ad53047674bb4a43e537d510de
+  - enabled: 1
+    path: Assets/Scenes/BuildVehicle.unity
+    guid: 6ea318379aa2a1341bc91059f15f2733
+  - enabled: 1
+    path: Assets/Scenes/SampleNetwork.unity
+    guid: b39ee8b78cec9e649a01fcde7bd81bd5
+  - enabled: 1
+    path: Assets/Scenes/SelectArena.unity
+    guid: dc626f36713c2e941be44fdf896bb3c3
+  - enabled: 1
+    path: Assets/Scenes/SelectCharacter.unity
+    guid: 064fb32b20e188841ba593df7fe07246
+  - enabled: 1
+    path: Assets/Scenes/LobbyScene.unity
+    guid: 9e918329f59de4442a8cd864d58f9dfe
+  - enabled: 0
+    path: Assets/Scenes/Arena.unity
+    guid: 90cc4436063f77840a510dfcccc80652
+  - enabled: 0
+    path: Assets/Scenes/VehicleMovement.unity
+    guid: 76ea656777451a94a88277a6d503bf2b
+  - enabled: 1
+    path: Assets/Scenes/StoreScene.unity
+    guid: 6da13bc0d0f73c346a88f746729c6767
+  - enabled: 1
+    path: Assets/Scenes/MatchmakeScene.unity
+    guid: 136362385139003498c45e025cfc1984
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: Assets/Scenes/TestMoviNet.unity
+    guid: df0596d95403b414eadb153cf2faa76d
+  m_configObjects: {}
