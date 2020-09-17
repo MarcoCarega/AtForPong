@@ -4,20 +4,27 @@ using UnityEngine;
 
 public class Boss_attack : StateMachineBehaviour
 {
-    private GameObject target_player;
+    private Transform target_player;
     private Rigidbody rb;
         
     //OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         rb = animator.GetComponent<Rigidbody>();
-        target_player = GameObject.FindGameObjectWithTag("Player");
+        target_player = animator.GetComponent<Boss>().target_to_attack;
     }
 
     //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(Vector3.Distance(rb.position, target_player.transform.position) > 4f)
+        if (target_player != null)
+        {
+            if (Vector3.Distance(rb.position, target_player.position) > 10f)
+            {
+                animator.SetTrigger("Chase");
+            }
+        }
+        else
         {
             animator.SetTrigger("Chase");
         }

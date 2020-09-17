@@ -15,15 +15,8 @@ public abstract class PowerUp : MonoBehaviour
         OnUsePowerUp(net,force);
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void setThrower(NetworkInstanceId target)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        thrower = NetworkServer.FindLocalObject(target).transform;
     }
 }

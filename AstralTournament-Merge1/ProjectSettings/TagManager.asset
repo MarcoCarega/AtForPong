@@ -13,6 +13,7 @@ TagManager:
   - Wheel
   - Homuncolo
   - Fruit
+  - Boss
   layers:
   - Default
   - TransparentFX

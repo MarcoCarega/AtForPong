@@ -5,12 +5,7 @@ using UnityEngine.AI;
 
 public class ChasePlayer : StateMachineBehaviour
 {
-    // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
-    private NavMeshAgent agent;
+    /*private NavMeshAgent agent;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         agent = animator.GetComponent<NavMeshAgent>();
@@ -28,29 +23,59 @@ public class ChasePlayer : StateMachineBehaviour
         {
             animator.SetTrigger("AttackPlayer");
         }
+    }*/
+
+    public float speed = 8f;
+    public float attackRange = 7f;
+
+    private Rigidbody rb;
+    public Transform target_player;
+    private Homuncolo homuScript;
+
+    // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
+    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        homuScript = animator.GetComponent<Homuncolo>();
+        rb = animator.GetComponent<Rigidbody>();
+        
+        target_player = homuScript.target;
+        homuScript.Rpc_moveToTarget();
+
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-    //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        Vector3 targetPos;
+        target_player = homuScript.target;
+
+        if (target_player != null)
+        {
+            homuScript.Rpc_moveToTarget();
+
+            targetPos = new Vector3(target_player.transform.position.x, rb.position.y, target_player.transform.position.z);
+
+            if (Vector3.Distance(rb.position, targetPos) <= attackRange)
+            {
+                int rand = Random.Range(1, 10);
+                //Debug.Log(rand);
+                if (rand > 5)
+                {
+                    animator.SetTrigger("Attack_swing");
+                }
+                else
+                {
+                    animator.SetTrigger("Attack_kick");
+                }
+            }
+        }
+    }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        animator.ResetTrigger("Attack_swing");
+        animator.ResetTrigger("Attack_kick");
+    }
 
-    // OnStateMove is called right after Animator.OnAnimatorMove()
-    //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    // Implement code that processes and affects root motion
-    //}
-
-    // OnStateIK is called right after Animator.OnAnimatorIK()
-    //override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    // Implement code that sets up animation IK (inverse kinematics)
-    //}
 }

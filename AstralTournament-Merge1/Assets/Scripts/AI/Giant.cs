@@ -28,7 +28,7 @@ public class Giant : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter(Collider other)
+    /*private void OnTriggerEnter(Collider other)
     {
         Bullet bullet = other.GetComponent<Bullet>();
         PowerUp powerUp = other.GetComponent<PowerUp>();
@@ -40,7 +40,7 @@ public class Giant : MonoBehaviour
         {
             destination = powerUp.thrower;
         }
-    }
+    }*/
 
     private FSMState makeStateMachine()
     {

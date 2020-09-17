@@ -137,25 +137,25 @@ WheelCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1207825954305525032}
   m_Center: {x: 0, y: 0, z: 0}
-  m_Radius: 0.65
+  m_Radius: 0.63
   m_SuspensionSpring:
-    spring: 3500
-    damper: 1750
+    spring: 5000
+    damper: 3000
     targetPosition: 0.5
   m_SuspensionDistance: 0.07
-  m_ForceAppPointDistance: 0
+  m_ForceAppPointDistance: 0.5
   m_Mass: 20
-  m_WheelDampingRate: 5
+  m_WheelDampingRate: 1
   m_ForwardFriction:
     m_ExtremumSlip: 5
     m_ExtremumValue: 1
     m_AsymptoteSlip: 5
     m_AsymptoteValue: 1
-    m_Stiffness: 5
+    m_Stiffness: 5.5
   m_SidewaysFriction:
     m_ExtremumSlip: 1
     m_ExtremumValue: 1
     m_AsymptoteSlip: 1
     m_AsymptoteValue: 1
-    m_Stiffness: 1
+    m_Stiffness: 2
   m_Enabled: 1

@@ -4,29 +4,22 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Networking;
 
-//[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class Boss : NetworkBehaviour
 {
-    public int health = 1000;
+    public float health = 1000f;
     public bool attacked;
     public int kickDamage = 20;
     public int spearDamage = 30;
-    public float spearAttackRange = 0.1f;
-    public float kickAttackRange = 0.1f;
     public Transform spearTip;
     public Transform foot;
 
     public LayerMask layerMask;
 
-    public Transform target;
+    public Transform target_to_attack;
 
     private bool m_Started;
 
-
-    private void Awake()
-    {
-        gameObject.SetActive(true);
-    }
     // Start is called before the first frame update
     void Start()
     {
@@ -82,11 +75,30 @@ public class Boss : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    public void Rpc_takeDamage(int amount)
+    public void takeDamage(float value, NetworkInstanceId netID)
     {
+        //if (!attacked) attacked = true;
+        Cmd_takeDamage(value, netID);
+    }
+
+    [Command]
+    private void Cmd_takeDamage(float damage, NetworkInstanceId netID)
+    {
+        Rpc_takeDamage(damage, netID);
+    }
+
+    [ClientRpc]
+    public void Rpc_takeDamage(float amount, NetworkInstanceId netID)
+    {
+        if (!attacked)
+        {
+            attacked = true;
+            Debug.Log(netID);
+            target_to_attack = NetworkServer.FindLocalObject(netID).transform;
+        }
         health -= amount;
-        if(health <= 0)
+        Debug.Log("Boss Hitted, health decreased.");
+        if (health <= 0)
         {
             Rpc_die();
         }
@@ -99,64 +111,21 @@ public class Boss : NetworkBehaviour
         Debug.Log("Boss died");
     }
 
-    public void moveTo(GameObject target)
+    [ClientRpc]
+    public void Rpc_moveToFruit(string name)
     {
-        GetComponent<NavMeshAgent>().destination = target.transform.position;
+
+        Debug.Log("going to " + name);
+        GetComponent<NavMeshAgent>().destination = GameObject.Find(name).transform.position;
     }
 
-    private void OnTriggerEnter(Collider collider)
+    [ClientRpc]
+    public void Rpc_moveToTarget()
     {
-        Bullet bull = collider.gameObject.GetComponent<Bullet>();
-        if (bull != null)
+        if (target_to_attack != null)
         {
-            target = bull.shooter;
-            attacked = true;
-            moveTo(target.gameObject);
+            GetComponent<NavMeshAgent>().destination = target_to_attack.position;
         }
-        PowerUp pup = collider.gameObject.GetComponent<PowerUp>();
-        if (bull != null)
-        {
-            target = pup.thrower;
-            attacked = true;
-            moveTo(target.gameObject);
-        }
-        
     }
-
-    /*public void moveToTarget(ChaseData data)
-    {
-        StartCoroutine("Chase",data);
-    }
-
-    public void moveToFruit()
-    {
-        StopCoroutine("Chase");
-
-    }
-
-    private IEnumerator Chase(ChaseData data)
-    {
-        while (true)
-        {
-            if(target!=null)
-            {
-                data.walk.target_player = GameObject.FindGameObjectWithTag("Player");
-                GetComponent<NavMeshAgent>().destination = data.target.transform.position;
-                yield return new WaitForSeconds(5f);
-            }
-        }
-    }*/
 
 }
-
-/*public class ChaseData
-{
-    public Boss_walk walk;
-    public Transform target;
-
-    public ChaseData(Boss_walk walk_ref, Transform trans)
-    {
-        walk = walk_ref;
-        target = trans;
-    }
-}*/

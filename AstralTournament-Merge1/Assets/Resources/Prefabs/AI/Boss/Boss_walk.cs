@@ -5,29 +5,36 @@ using UnityEngine;
 public class Boss_walk : StateMachineBehaviour
 {
     public float speed = 1f;
-    public float attackRange = .2f;
+    public float attackRange = 50f;
 
-    private List<GameObject> fruits;
+    private List<GameObject> fruitsToVisit;
+    private List<GameObject> fruitsVisited;
     private GameObject target_fruit;
     private Rigidbody rb;
-    public GameObject target_player;
-    //private bool targetReached = false;
+    public Transform target_player;
+    private Boss bossScript;
+
+    private void Awake()
+    {
+        fruitsToVisit = new List<GameObject>(GameObject.FindGameObjectsWithTag("Fruit"));
+        fruitsVisited = new List<GameObject>();
+    }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (animator.GetComponent<Boss>().attacked)
-        {
-            target_player = GameObject.FindGameObjectWithTag("Player");
-            animator.GetComponent<Boss>().moveTo(target_player);
-        }
+        bossScript = animator.GetComponent<Boss>();
 
-        if (target_player == null)
+        if (bossScript.attacked)
         {
-            fruits = new List<GameObject>(GameObject.FindGameObjectsWithTag("Fruit"));
-            target_fruit = fruits[Random.Range(0, fruits.Count - 1)];
-            animator.GetComponent<Boss>().moveTo(target_fruit);
-            animator.GetComponent<Boss>().attacked = false;
+            //target_player = GameObject.FindGameObjectWithTag("Player");
+            target_player = bossScript.target_to_attack;
+            bossScript.Rpc_moveToTarget();
+        }
+        else
+        {
+            target_fruit = findNextFruit();
+            bossScript.Rpc_moveToFruit(target_fruit.name);
         }
 
         rb = animator.GetComponent<Rigidbody>();
@@ -38,52 +45,60 @@ public class Boss_walk : StateMachineBehaviour
     {
         Vector3 targetPos;
 
-        if (target_player == null)
+        if (bossScript.attacked)
         {
-            //animator.GetComponent<Boss>().moveToFruit();
+            //target_player = GameObject.FindGameObjectWithTag("Player");
+            target_player = bossScript.target_to_attack;
 
-            targetPos = new Vector3(target_fruit.transform.position.x, rb.position.y, target_fruit.transform.position.z);
-            //rb.transform.LookAt(targetPos);
-            animator.GetComponent<Boss>().moveTo(target_fruit);
-
-            //Vector3 newPos = Vector3.MoveTowards(rb.position, targetPos, speed * Time.fixedDeltaTime);
-            //rb.MovePosition(newPos);
-
-            if (Vector3.Distance(rb.position, targetPos) <= attackRange)
+            if (target_player != null)
             {
-                
-                animator.SetTrigger("FruitReached");
+                bossScript.Rpc_moveToTarget();
+
+                targetPos = new Vector3(target_player.transform.position.x, rb.position.y, target_player.transform.position.z);
+
+                if (Vector3.Distance(rb.position, targetPos) <= attackRange)
+                {
+                    int rand = Random.Range(1, 10);
+                    //Debug.Log(rand);
+                    if (rand > 5)
+                    {
+                        animator.SetTrigger("Attack_swing");
+                    }
+                    else
+                    {
+                        animator.SetTrigger("Attack_kick");
+                    }
+                }
+            }
+            else
+            {
+                targetPos = new Vector3(target_fruit.transform.position.x, rb.position.y, target_fruit.transform.position.z);
+
+                target_fruit = findNextFruit();
+                bossScript.Rpc_moveToFruit(target_fruit.name);
+
+                if (Vector3.Distance(rb.position, targetPos) <= 5f)
+                {
+                    fruitsToVisit.Remove(target_fruit);
+                    fruitsVisited.Add(target_fruit);
+                    animator.SetTrigger("FruitReached");
+                }
+
+                bossScript.attacked = false;
             }
 
         }
         else
         {
-            //animator.GetComponent<Boss>().moveToTarget(new ChaseData(this,target_player.transform));
+            targetPos = new Vector3(target_fruit.transform.position.x, rb.position.y, target_fruit.transform.position.z);
 
-            animator.GetComponent<Boss>().moveTo(target_player);
-
-            targetPos = new Vector3(target_player.transform.position.x, rb.position.y, target_player.transform.position.z);
-            //rb.transform.LookAt(targetPos);
-
-            //Vector3 newPos = Vector3.MoveTowards(rb.position, targetPos, speed * Time.fixedDeltaTime);
-            //rb.MovePosition(newPos);
-
-            if (Vector3.Distance(rb.position, targetPos) <= 20f)
+            if (Vector3.Distance(rb.position, targetPos) <= 5f)
             {
-                int rand = Random.Range(1, 10);
-                Debug.Log(rand);
-                if (rand > 5)
-                {
-                    animator.SetTrigger("Attack_swing");
-                }
-                else
-                {
-                    animator.SetTrigger("Attack_kick");
-                }
+                fruitsToVisit.Remove(target_fruit);
+                fruitsVisited.Add(target_fruit);
+                animator.SetTrigger("FruitReached");
             }
-
         }
-
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
@@ -92,12 +107,28 @@ public class Boss_walk : StateMachineBehaviour
         if (target_player == null)
         {
             animator.ResetTrigger("FruitReached");
-            Destroy(target_fruit);
         }
         else
         {
             animator.ResetTrigger("Attack_swing");
             animator.ResetTrigger("Attack_kick");
         }
+    }
+
+    private GameObject findNextFruit()
+    {
+        if (fruitsToVisit.Count == 0)
+        {
+            Debug.Log("Reset \"fruits to visit\" list");
+            fruitsToVisit = new List<GameObject>(fruitsVisited);
+            fruitsVisited = new List<GameObject>();
+            target_fruit = fruitsToVisit[Random.Range(0, fruitsToVisit.Count - 1)];
+        }
+        else
+        {
+            target_fruit = fruitsToVisit[Random.Range(0, fruitsToVisit.Count - 1)];
+        }
+
+        return target_fruit;
     }
 }

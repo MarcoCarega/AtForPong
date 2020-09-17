@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class Bullet : MonoBehaviour
 {
     public float speed;
     public float attack;
     public Type attackType;
+
     public GameObject hitPrefab;
-    internal Transform shooter;
+
+    internal NetworkInstanceId shooter;
 
     private void OnTriggerEnter(Collider collider)
     {
@@ -22,6 +25,11 @@ public class Bullet : MonoBehaviour
         }
         Bullet bullet = collider.GetComponent<Bullet>();
         if (bullet != null) return;
+        if (collider.CompareTag("Boss"))
+        {
+            collider.GetComponent<Boss>().takeDamage(attack, shooter);
+            Debug.Log("hitting boss");
+        }
         StartCoroutine("HitBullet");
     }
 
@@ -34,15 +42,10 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject);
         
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    public void setShooter(NetworkInstanceId IDShooter)
     {
-        
+        Debug.Log(IDShooter);
+        shooter = IDShooter;
     }
 }

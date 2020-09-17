@@ -192,9 +192,9 @@ MonoBehaviour:
   wheels: []
   steeringWheels: []
   meshes: []
-  torqueCoefficient: 200000
+  torqueCoefficient: 20000
   maxTurn: 20
-  brakeStrength: 0
+  brakeStrength: 20000
   CM: {fileID: 0}
   rb: {fileID: 0}
 --- !u!114 &114901728146373604

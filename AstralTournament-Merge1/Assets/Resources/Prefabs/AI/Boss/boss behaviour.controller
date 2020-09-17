@@ -76,8 +76,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5301b54440839cd4488ce8488b0f247b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  attackRange: 0.2
+  speed: 6
+  attackRange: 10
   target_player: {fileID: 0}
 --- !u!114 &114804673047865580
 MonoBehaviour:
@@ -433,10 +433,10 @@ AnimatorStateMachine:
     m_Position: {x: 120, y: 312, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102331006232501228}
-    m_Position: {x: 348, y: 96, z: 0}
+    m_Position: {x: -84, y: 324, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102502972091862058}
-    m_Position: {x: 540, y: 312, z: 0}
+    m_Position: {x: 588, y: 252, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102198943263331858}
     m_Position: {x: 24, y: 216, z: 0}
